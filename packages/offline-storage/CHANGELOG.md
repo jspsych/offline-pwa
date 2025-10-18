@@ -1,5 +1,11 @@
 # @jspsych/offline-storage
 
+## 0.3.0
+
+### Minor Changes
+
+- [#4](https://github.com/jspsych/offline-pwa/pull/4) [`024afb5e52759f09cff334905dc631d04c9e7fcb`](https://github.com/jspsych/offline-pwa/commit/024afb5e52759f09cff334905dc631d04c9e7fcb) Thanks [@jodeleeuw](https://github.com/jodeleeuw)! - Make initJsPsychOffline synchronous and remove UI helpers. initJsPsychOffline now returns immediately like initJsPsych, with database initialization happening in the background. Removed autoShowCompletionScreen option and UI helper functions - researchers should handle completion using standard jsPsych methods.
+
 ## 0.2.0
 
 ### Minor Changes
