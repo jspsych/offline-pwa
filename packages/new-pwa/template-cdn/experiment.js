@@ -1,19 +1,15 @@
-import htmlKeyboardResponse from "https://unpkg.com/@jspsych/plugin-html-keyboard-response@2";
-import preload from "https://unpkg.com/@jspsych/plugin-preload@2";
-import { initJsPsychOffline } from "https://unpkg.com/@jspsych/offline-storage@0.1";
-
 // Initialize jsPsych with offline storage
-const jsPsych = await initJsPsychOffline();
+const jsPsych = jsPsychOfflineStorage.initJsPsychOffline();
 
 // Preload any assets
 const preloadTrial = {
-  type: preload,
+  type: jsPsychPreload,
   images: [],
 };
 
 // Welcome screen
 const welcome = {
-  type: htmlKeyboardResponse,
+  type: jsPsychHtmlKeyboardResponse,
   stimulus: `
     <h1>Welcome to the experiment!</h1>
     <p>This is an offline jsPsych experiment that saves data locally on your device.</p>
@@ -23,7 +19,7 @@ const welcome = {
 
 // Instructions
 const instructions = {
-  type: htmlKeyboardResponse,
+  type: jsPsychHtmlKeyboardResponse,
   stimulus: `
     <h2>Instructions</h2>
     <p>You will be presented with a series of stimuli.</p>
@@ -43,7 +39,7 @@ const testStimuli = [
 ];
 
 const testTrial = {
-  type: htmlKeyboardResponse,
+  type: jsPsychHtmlKeyboardResponse,
   stimulus: () => {
     return `<div style="font-size: 60px;">${jsPsych.timelineVariable("stimulus")}</div>`;
   },
@@ -65,7 +61,7 @@ const testProcedure = {
 
 // Debrief
 const debrief = {
-  type: htmlKeyboardResponse,
+  type: jsPsychHtmlKeyboardResponse,
   stimulus: () => {
     const trials = jsPsych.data.get().filter({ task: "response" });
     const correct_trials = trials.filter({ correct: true });
@@ -85,6 +81,4 @@ const debrief = {
 const timeline = [preloadTrial, welcome, instructions, testProcedure, debrief];
 
 // Run experiment
-await jsPsych.run(timeline);
-
-// The completion screen will be shown automatically
+jsPsych.run(timeline);
