@@ -1,5 +1,11 @@
 # @jspsych/new-pwa
 
+## 0.3.1
+
+### Patch Changes
+
+- [#10](https://github.com/jspsych/offline-pwa/pull/10) [`cd0fd7ac5163d929d038528956e0960d5bac2bb2`](https://github.com/jspsych/offline-pwa/commit/cd0fd7ac5163d929d038528956e0960d5bac2bb2) Thanks [@jodeleeuw](https://github.com/jodeleeuw)! - Fix version generation by creating version.ts at build time instead of reading from offline-storage package.json at runtime, resolving ENOENT error when using npx
+
 ## 0.3.0
 
 ### Minor Changes
