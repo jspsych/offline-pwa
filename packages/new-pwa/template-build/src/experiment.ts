@@ -3,7 +3,7 @@ import htmlKeyboardResponse from "@jspsych/plugin-html-keyboard-response";
 import preload from "@jspsych/plugin-preload";
 
 // Initialize jsPsych with offline storage
-const jsPsych = await initJsPsychOffline();
+const jsPsych = initJsPsychOffline();
 
 // Preload any assets
 const preloadTrial = {
@@ -45,12 +45,12 @@ const testStimuli = [
 const testTrial = {
   type: htmlKeyboardResponse,
   stimulus: () => {
-    return `<div style="font-size: 60px;">${jsPsych.timelineVariable("stimulus")}</div>`;
+    return `<div style="font-size: 60px;">${jsPsych.evaluateTimelineVariable("stimulus")}</div>`;
   },
   choices: ["f", "j"],
   data: {
     task: "response",
-    correct_response: jsPsych.timelineVariable("correct_response"),
+    correct_response: jsPsych.evaluateTimelineVariable("correct_response"),
   },
   on_finish: (data: any) => {
     data.correct = data.response === data.correct_response;
@@ -85,6 +85,4 @@ const debrief = {
 const timeline = [preloadTrial, welcome, instructions, testProcedure, debrief];
 
 // Run experiment
-await jsPsych.run(timeline);
-
-// The completion screen will be shown automatically
+jsPsych.run(timeline);

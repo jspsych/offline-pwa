@@ -41,12 +41,12 @@ const testStimuli = [
 const testTrial = {
   type: jsPsychHtmlKeyboardResponse,
   stimulus: () => {
-    return `<div style="font-size: 60px;">${jsPsych.timelineVariable("stimulus")}</div>`;
+    return `<div style="font-size: 60px;">${jsPsych.evaluateTimelineVariable("stimulus")}</div>`;
   },
   choices: ["f", "j"],
   data: {
     task: "response",
-    correct_response: jsPsych.timelineVariable("correct_response"),
+    correct_response: jsPsych.evaluateTimelineVariable("correct_response"),
   },
   on_finish: (data) => {
     data.correct = data.response === data.correct_response;
