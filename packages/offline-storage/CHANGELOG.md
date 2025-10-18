@@ -1,5 +1,11 @@
 # @jspsych/offline-storage
 
+## 0.4.0
+
+### Minor Changes
+
+- [#8](https://github.com/jspsych/offline-pwa/pull/8) [`2806621bf4bbdc5ddf43456fcdaafd4297114458`](https://github.com/jspsych/offline-pwa/commit/2806621bf4bbdc5ddf43456fcdaafd4297114458) Thanks [@jodeleeuw](https://github.com/jodeleeuw)! - Add getOfflineDataManager() function to access offline API without creating a new session. Admin templates now use this function instead of initJsPsychOffline() to avoid creating spurious sessions.
+
 ## 0.3.0
 
 ### Minor Changes

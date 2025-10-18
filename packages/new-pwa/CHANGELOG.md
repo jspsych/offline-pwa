@@ -1,5 +1,13 @@
 # @jspsych/new-pwa
 
+## 0.3.0
+
+### Minor Changes
+
+- [#8](https://github.com/jspsych/offline-pwa/pull/8) [`2806621bf4bbdc5ddf43456fcdaafd4297114458`](https://github.com/jspsych/offline-pwa/commit/2806621bf4bbdc5ddf43456fcdaafd4297114458) Thanks [@jodeleeuw](https://github.com/jodeleeuw)! - Add getOfflineDataManager() function to access offline API without creating a new session. Admin templates now use this function instead of initJsPsychOffline() to avoid creating spurious sessions.
+
+- [#8](https://github.com/jspsych/offline-pwa/pull/8) [`2806621bf4bbdc5ddf43456fcdaafd4297114458`](https://github.com/jspsych/offline-pwa/commit/2806621bf4bbdc5ddf43456fcdaafd4297114458) Thanks [@jodeleeuw](https://github.com/jodeleeuw)! - Templates now dynamically use the current offline-storage package version instead of hardcoded version numbers, ensuring newly created projects always reference the latest published version.
+
 ## 0.2.1
 
 ### Patch Changes
