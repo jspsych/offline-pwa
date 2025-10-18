@@ -15,7 +15,6 @@ import {
   SessionData,
 } from "./storage.js";
 import { exportAll, downloadBlob, getExportFilename, ExportFormat } from "./exporter.js";
-import { showCompletionScreen } from "./ui.js";
 
 export interface OfflineOptions {
   /**
@@ -27,11 +26,6 @@ export interface OfflineOptions {
    * Session metadata to store
    */
   sessionMetadata?: any;
-
-  /**
-   * Whether to automatically show completion screen (default: true)
-   */
-  autoShowCompletionScreen?: boolean;
 
   /**
    * Estimated size of typical session in bytes for storage warning (default: 1MB)
@@ -67,8 +61,6 @@ export interface OfflineAPI {
   exportAll: (format: ExportFormat) => Promise<void>;
   getStorageEstimate: () => Promise<{ usage: number; quota: number; percentUsed: number }>;
   checkStorageWarning: () => Promise<boolean>;
-  showCompletionScreen: () => Promise<void>;
-  showDataManager: () => void;
 }
 
 export interface JsPsychOffline extends JsPsych {
@@ -80,33 +72,40 @@ let lastSessionSize = 0;
 /**
  * Initialize jsPsych with offline storage capabilities
  */
-export async function initJsPsychOffline(
-  options: JsPsychOfflineOptions = {},
-): Promise<JsPsychOffline> {
+export function initJsPsychOffline(options: JsPsychOfflineOptions = {}): JsPsychOffline {
   const { offline = {}, ...jsPsychOptions } = options;
 
   const {
     dbName,
     sessionMetadata,
-    autoShowCompletionScreen = true,
     typicalSessionSize = 1024 * 1024, // 1MB default
   } = offline;
 
-  // Initialize storage
-  const db = await init(dbName);
+  // Initialize storage asynchronously in background
   const sessionId = crypto.randomUUID();
-
-  // Create session record
-  await createSession(db, sessionId, sessionMetadata);
-
+  let db: IDBPDatabase | null = null;
+  let sessionStartSize = 0;
   let trialIndex = 0;
-  const sessionStartSize = (await getStorageEstimate()).usage;
+  let isInitialized = false;
+
+  // Initialize database in background
+  const initPromise = (async () => {
+    db = await init(dbName);
+    await createSession(db, sessionId, sessionMetadata);
+    sessionStartSize = (await getStorageEstimate()).usage;
+    isInitialized = true;
+  })();
 
   // Wrap jsPsych init
   const jsPsych = initJsPsych({
     ...jsPsychOptions,
     on_data_update: async (data: any) => {
-      await saveTrial(db, sessionId, trialIndex, data);
+      // Wait for initialization if not ready
+      if (!isInitialized) {
+        await initPromise;
+      }
+
+      await saveTrial(db!, sessionId, trialIndex, data);
       trialIndex++;
 
       if (jsPsychOptions.on_data_update) {
@@ -114,7 +113,12 @@ export async function initJsPsychOffline(
       }
     },
     on_finish: async (data: any) => {
-      await finalizeSession(db, sessionId);
+      // Wait for initialization if not ready
+      if (!isInitialized) {
+        await initPromise;
+      }
+
+      await finalizeSession(db!, sessionId);
 
       // Calculate session size
       const sessionEndSize = (await getStorageEstimate()).usage;
@@ -127,10 +131,8 @@ export async function initJsPsychOffline(
         await jsPsychOptions.on_finish(data);
       }
 
-      // Show completion screen if enabled
-      if (autoShowCompletionScreen) {
-        await showCompletionScreen(offlineAPI);
-      } else if (storageWarning) {
+      // Warn if storage is low
+      if (storageWarning) {
         console.warn(
           "Storage is running low. Consider exporting and deleting old sessions to free up space.",
         );
@@ -143,28 +145,34 @@ export async function initJsPsychOffline(
     sessionId,
 
     getSessionCount: async () => {
-      return await getSessionCount(db);
+      if (!isInitialized) await initPromise;
+      return await getSessionCount(db!);
     },
 
     getCompletedSessionCount: async () => {
-      return await getCompletedSessionCount(db);
+      if (!isInitialized) await initPromise;
+      return await getCompletedSessionCount(db!);
     },
 
     getAllSessions: async () => {
-      return await getAllSessions(db);
+      if (!isInitialized) await initPromise;
+      return await getAllSessions(db!);
     },
 
     deleteSession: async (sessionId: string) => {
-      await deleteSession(db, sessionId);
+      if (!isInitialized) await initPromise;
+      await deleteSession(db!, sessionId);
     },
 
     clearAllData: async () => {
-      await clearAllData(db);
+      if (!isInitialized) await initPromise;
+      await clearAllData(db!);
     },
 
     exportAll: async (format: ExportFormat) => {
-      const blob = await exportAll(db, format);
-      const sessionCount = await getSessionCount(db);
+      if (!isInitialized) await initPromise;
+      const blob = await exportAll(db!, format);
+      const sessionCount = await getSessionCount(db!);
       const filename = getExportFilename(format, sessionCount);
       downloadBlob(blob, filename);
     },
@@ -176,14 +184,6 @@ export async function initJsPsychOffline(
     checkStorageWarning: async () => {
       const sizeToCheck = lastSessionSize > 0 ? lastSessionSize : typicalSessionSize;
       return await isStorageLow(sizeToCheck);
-    },
-
-    showCompletionScreen: async () => {
-      await showCompletionScreen(offlineAPI);
-    },
-
-    showDataManager: () => {
-      window.location.href = "/admin.html";
     },
   };
 
