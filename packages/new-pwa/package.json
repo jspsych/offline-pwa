@@ -1,6 +1,6 @@
 {
   "name": "@jspsych/new-pwa",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Create offline-capable jsPsych PWA experiments",
   "type": "module",
   "bin": "./bin/cli.js",
