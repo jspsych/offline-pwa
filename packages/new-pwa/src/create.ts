@@ -4,6 +4,7 @@ import * as path from "path";
 import prompts from "prompts";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
+import { OFFLINE_STORAGE_VERSION } from "./version.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -74,11 +75,6 @@ export async function create(projectName?: string, options: CreateOptions = {}) 
   const templateDir = path.join(__dirname, `../template-${templateChoice}`);
   await fs.copy(templateDir, projectPath);
 
-  // Read offline-storage version
-  const offlineStoragePkgPath = path.join(__dirname, "../../offline-storage/package.json");
-  const offlineStoragePkg = JSON.parse(await readFile(offlineStoragePkgPath, "utf-8"));
-  const offlineStorageVersion = offlineStoragePkg.version;
-
   // Process template variables in files
   const packageName = path.basename(projectPath);
   await replaceInFile(path.join(projectPath, "package.json"), {
@@ -93,16 +89,16 @@ export async function create(projectName?: string, options: CreateOptions = {}) 
   if (templateChoice === "cdn") {
     await replaceInFile(path.join(projectPath, "index.html"), {
       "{{title}}": experimentTitle,
-      "{{offlineStorageVersion}}": offlineStorageVersion,
+      "{{offlineStorageVersion}}": OFFLINE_STORAGE_VERSION,
     });
 
     await replaceInFile(path.join(projectPath, "admin/index.html"), {
       "{{title}}": experimentTitle,
-      "{{offlineStorageVersion}}": offlineStorageVersion,
+      "{{offlineStorageVersion}}": OFFLINE_STORAGE_VERSION,
     });
 
     await replaceInFile(path.join(projectPath, "service/sw.js"), {
-      "{{offlineStorageVersion}}": offlineStorageVersion,
+      "{{offlineStorageVersion}}": OFFLINE_STORAGE_VERSION,
     });
 
     await replaceInFile(path.join(projectPath, "manifest.json"), {
