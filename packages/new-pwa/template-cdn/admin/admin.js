@@ -1,10 +1,10 @@
 // Initialize offline API without running experiment
 const { offline } = jsPsychOfflineStorage.initJsPsychOffline({ timeline: [] });
 
-function init() {
-  updateStats();
-  updateSessionList();
-  checkStorage();
+async function init() {
+  await updateStats();
+  await updateSessionList();
+  await checkStorage();
 }
 
 async function updateStats() {
@@ -73,8 +73,8 @@ window.exportData = async function (format) {
 window.deleteSession = async function (sessionId) {
   if (confirm("Are you sure you want to delete this session?")) {
     await offline.deleteSession(sessionId);
-    updateStats();
-    updateSessionList();
+    await updateStats();
+    await updateSessionList();
   }
 };
 
@@ -82,8 +82,8 @@ window.clearAllData = async function () {
   if (confirm("Are you sure? This will permanently delete ALL data!")) {
     if (confirm("This cannot be undone. Are you absolutely sure?")) {
       await offline.clearAllData();
-      updateStats();
-      updateSessionList();
+      await updateStats();
+      await updateSessionList();
       alert("All data has been cleared.");
     }
   }
