@@ -11,6 +11,7 @@
     "template-build"
   ],
   "scripts": {
+    "prebuild": "node scripts/generate-version.js",
     "build": "tsc",
     "test": "jest",
     "prepublishOnly": "npm run build"
