@@ -1,6 +1,6 @@
 {
   "name": "@jspsych/offline-storage",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Offline data storage for jsPsych experiments",
   "type": "module",
   "main": "./dist/index.js",
