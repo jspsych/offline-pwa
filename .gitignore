@@ -29,8 +29,3 @@ build/
 
 # Turbo
 .turbo/
-
-# Changeset
-.changeset/*.md
-!.changeset/README.md
-!.changeset/config.json
