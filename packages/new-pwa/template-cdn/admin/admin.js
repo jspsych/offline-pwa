@@ -1,5 +1,5 @@
-// Initialize offline API without running experiment
-const { offline } = jsPsychOfflineStorage.initJsPsychOffline({ timeline: [] });
+// Get offline data manager (without creating a new session)
+const offline = jsPsychOfflineStorage.getOfflineDataManager();
 
 async function init() {
   await updateStats();

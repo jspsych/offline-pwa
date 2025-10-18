@@ -120,8 +120,8 @@ export async function getSessionCount(db: IDBPDatabase): Promise<number> {
  * Get count of completed sessions
  */
 export async function getCompletedSessionCount(db: IDBPDatabase): Promise<number> {
-  const index = db.transaction(SESSIONS_STORE).store.index("completed");
-  return await index.count(IDBKeyRange.only(true));
+  const sessions = await db.getAll(SESSIONS_STORE);
+  return sessions.filter((session) => session.completed).length;
 }
 
 /**

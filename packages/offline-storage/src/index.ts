@@ -193,6 +193,65 @@ export function initJsPsychOffline(options: JsPsychOfflineOptions = {}): JsPsych
   return jsPsych;
 }
 
+/**
+ * Get offline API for data management without initializing an experiment
+ */
+export function getOfflineDataManager(dbName?: string): OfflineAPI {
+  let db: IDBPDatabase | null = null;
+  let isInitialized = false;
+
+  // Initialize database in background
+  const initPromise = (async () => {
+    db = await init(dbName);
+    isInitialized = true;
+  })();
+
+  return {
+    sessionId: "", // No active session
+
+    getSessionCount: async () => {
+      if (!isInitialized) await initPromise;
+      return await getSessionCount(db!);
+    },
+
+    getCompletedSessionCount: async () => {
+      if (!isInitialized) await initPromise;
+      return await getCompletedSessionCount(db!);
+    },
+
+    getAllSessions: async () => {
+      if (!isInitialized) await initPromise;
+      return await getAllSessions(db!);
+    },
+
+    deleteSession: async (sessionId: string) => {
+      if (!isInitialized) await initPromise;
+      await deleteSession(db!, sessionId);
+    },
+
+    clearAllData: async () => {
+      if (!isInitialized) await initPromise;
+      await clearAllData(db!);
+    },
+
+    exportAll: async (format: ExportFormat) => {
+      if (!isInitialized) await initPromise;
+      const blob = await exportAll(db!, format);
+      const sessionCount = await getSessionCount(db!);
+      const filename = getExportFilename(format, sessionCount);
+      downloadBlob(blob, filename);
+    },
+
+    getStorageEstimate: async () => {
+      return await getStorageEstimate();
+    },
+
+    checkStorageWarning: async () => {
+      return await isStorageLow(1024 * 1024); // Default 1MB
+    },
+  };
+}
+
 // Re-export types and utilities
 export type { SessionData, TrialData } from "./storage.js";
 export type { ExportFormat } from "./exporter.js";
