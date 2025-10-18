@@ -1,5 +1,11 @@
 # @jspsych/new-pwa
 
+## 0.2.1
+
+### Patch Changes
+
+- [#6](https://github.com/jspsych/offline-pwa/pull/6) [`b70363c319c0affa411197429d44a8cf0059fa2a`](https://github.com/jspsych/offline-pwa/commit/b70363c319c0affa411197429d44a8cf0059fa2a) Thanks [@jodeleeuw](https://github.com/jodeleeuw)! - Fix template experiment code to use evaluateTimelineVariable() instead of timelineVariable() inside functions, and add jsPsych CSS stylesheet to both templates
+
 ## 0.2.0
 
 ### Minor Changes
