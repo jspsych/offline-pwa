@@ -1,0 +1,12 @@
+# IDE
+.DS_Store
+.vscode/
+.idea/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Local development
+.env
+.env.local

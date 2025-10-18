@@ -1,0 +1,51 @@
+{
+  "name": "@jspsych/new-pwa",
+  "version": "0.1.0",
+  "description": "Create offline-capable jsPsych PWA experiments",
+  "type": "module",
+  "bin": "./bin/cli.js",
+  "files": [
+    "bin",
+    "dist",
+    "template-cdn",
+    "template-build"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "jspsych",
+    "offline",
+    "pwa",
+    "cli",
+    "psychology",
+    "behavioral-research"
+  ],
+  "author": "jsPsych contributors",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jspsych/offline-pwa.git",
+    "directory": "packages/new-pwa"
+  },
+  "bugs": {
+    "url": "https://github.com/jspsych/offline-pwa/issues"
+  },
+  "homepage": "https://github.com/jspsych/offline-pwa#readme",
+  "dependencies": {
+    "commander": "^11.1.0",
+    "fs-extra": "^11.2.0",
+    "prompts": "^2.4.2"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/prompts": "^2.4.9",
+    "jest": "^29.7.0",
+    "typescript": "^5.3.0"
+  }
+}
