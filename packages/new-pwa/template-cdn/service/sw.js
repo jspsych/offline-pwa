@@ -17,7 +17,7 @@ const cdnUrlsToCache = [
   "https://unpkg.com/jspsych@8",
   "https://unpkg.com/@jspsych/plugin-html-keyboard-response@2",
   "https://unpkg.com/@jspsych/plugin-preload@2",
-  "https://unpkg.com/@jspsych/offline-storage@0.1",
+  "https://unpkg.com/@jspsych/offline-storage@{{offlineStorageVersion}}",
 ];
 
 self.addEventListener("install", (event) => {
