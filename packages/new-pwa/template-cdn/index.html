@@ -7,6 +7,10 @@
     <meta name="theme-color" content="#000000" />
     <link rel="manifest" href="/manifest.json" />
     <title>{{title}}</title>
+    <script src="https://unpkg.com/jspsych@8"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@2"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-preload@2"></script>
+    <script src="https://unpkg.com/@jspsych/offline-storage@0.1"></script>
     <script>
       if ("serviceWorker" in navigator) {
         navigator.serviceWorker.register("/service/sw.js");
@@ -14,7 +18,7 @@
     </script>
   </head>
   <body>
-    <div id="jspsych-content"></div>
-    <script type="module" src="/experiment.js"></script>
+    <div id="jspsych-target"></div>
+    <script src="/experiment.js"></script>
   </body>
 </html>
