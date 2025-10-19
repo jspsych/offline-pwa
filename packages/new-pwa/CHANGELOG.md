@@ -1,5 +1,11 @@
 # @jspsych/new-pwa
 
+## 0.4.0
+
+### Minor Changes
+
+- [#13](https://github.com/jspsych/offline-pwa/pull/13) [`a605230973e5340186caa3019541c5cc3899aacc`](https://github.com/jspsych/offline-pwa/commit/a605230973e5340186caa3019541c5cc3899aacc) Thanks [@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)! - Make the PWA more offline friendly by ensuring that the main jspsych target div takes the full viewport and is hidden initially. Fixes layout issues and template problems.
+
 ## 0.3.1
 
 ### Patch Changes
