@@ -1,5 +1,11 @@
 # @jspsych/new-pwa
 
+## 0.4.1
+
+### Patch Changes
+
+- [#15](https://github.com/jspsych/offline-pwa/pull/15) [`b5b091323e1a3a368a9a14d917c73cf1ea744bf7`](https://github.com/jspsych/offline-pwa/commit/b5b091323e1a3a368a9a14d917c73cf1ea744bf7) Thanks [@jodeleeuw](https://github.com/jodeleeuw)! - Fix directory of service worker file
+
 ## 0.4.0
 
 ### Minor Changes
