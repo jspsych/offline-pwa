@@ -5,9 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Offline jsPsych experiment" />
     <meta name="theme-color" content="#000000" />
-    <link rel="manifest" href="/manifest.json" />
+    <link rel="manifest" href="manifest.json" />
     <title>{{title}}</title>
     <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css" />
+    <script>
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("sw.js", { scope: "./" });
+      }
+    </script>
   </head>
   <body>
     <div id="jspsych-content"></div>

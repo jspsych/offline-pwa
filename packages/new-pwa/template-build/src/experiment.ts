@@ -1,9 +1,11 @@
 import { initJsPsychOffline } from "@jspsych/offline-storage";
-import htmlKeyboardResponse from "@jspsych/plugin-html-keyboard-response";
+import htmlButtonResponse from "@jspsych/plugin-html-button-response";
 import preload from "@jspsych/plugin-preload";
 
 // Initialize jsPsych with offline storage
-const jsPsych = initJsPsychOffline();
+const jsPsych = initJsPsychOffline({
+  display_element: "jspsych-content",
+});
 
 // Preload any assets
 const preloadTrial = {
@@ -13,46 +15,51 @@ const preloadTrial = {
 
 // Welcome screen
 const welcome = {
-  type: htmlKeyboardResponse,
+  type: htmlButtonResponse,
   stimulus: `
     <h1>Welcome to the experiment!</h1>
     <p>This is an offline jsPsych experiment that saves data locally on your device.</p>
-    <p>Press any key to begin.</p>
+    <p>Press the button below to begin.</p>
   `,
+  choices: ["Continue"],
 };
 
 // Instructions
 const instructions = {
-  type: htmlKeyboardResponse,
+  type: htmlButtonResponse,
   stimulus: `
     <h2>Instructions</h2>
     <p>You will be presented with a series of stimuli.</p>
-    <p>Press <strong>F</strong> if you see the letter A.</p>
-    <p>Press <strong>J</strong> if you see the letter B.</p>
+    <p>Press <strong>A</strong> if you see the letter A.</p>
+    <p>Press <strong>B</strong> if you see the letter B.</p>
     <p>Try to respond as quickly and accurately as possible.</p>
-    <p>Press any key to start.</p>
   `,
+  choices: ["Start"],
 };
 
 // Test trials
 const testStimuli = [
-  { stimulus: "A", correct_response: "f" },
-  { stimulus: "B", correct_response: "j" },
-  { stimulus: "A", correct_response: "f" },
-  { stimulus: "B", correct_response: "j" },
+  { stimulus: "A", correct_response: 0 },
+  { stimulus: "B", correct_response: 1 },
+  { stimulus: "A", correct_response: 0 },
+  { stimulus: "B", correct_response: 1 },
 ];
 
 const testTrial = {
-  type: htmlKeyboardResponse,
+  type: htmlButtonResponse,
   stimulus: () => {
     return `<div style="font-size: 60px;">${jsPsych.evaluateTimelineVariable("stimulus")}</div>`;
   },
-  choices: ["f", "j"],
+  choices: ["A", "B"],
   data: {
     task: "response",
     correct_response: jsPsych.evaluateTimelineVariable("correct_response"),
   },
   on_finish: (data: any) => {
+    // Normalize null responses to -1
+    if (data.response === null) {
+      data.response = -1;
+    }
     data.correct = data.response === data.correct_response;
   },
 };
@@ -65,20 +72,24 @@ const testProcedure = {
 
 // Debrief
 const debrief = {
-  type: htmlKeyboardResponse,
+  type: htmlButtonResponse,
   stimulus: () => {
     const trials = jsPsych.data.get().filter({ task: "response" });
     const correct_trials = trials.filter({ correct: true });
-    const accuracy = Math.round((correct_trials.count() / trials.count()) * 100);
-    const rt = Math.round(correct_trials.select("rt").mean());
+
+    // Guard against zero-count
+    const trialCount = trials.count();
+    const accuracy = trialCount > 0 ? Math.round((correct_trials.count() / trialCount) * 100) : 0;
+    const rt = correct_trials.count() > 0 ? Math.round(correct_trials.select("rt").mean()) : 0;
 
     return `
       <h2>You're done!</h2>
       <p>Your accuracy: <strong>${accuracy}%</strong></p>
       <p>Your average response time: <strong>${rt}ms</strong></p>
-      <p>Press any key to complete the experiment.</p>
+      <p>Press the button below to complete the experiment.</p>
     `;
   },
+  choices: ["Finish"],
 };
 
 // Create timeline

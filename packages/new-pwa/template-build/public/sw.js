@@ -1,14 +1,31 @@
 // Service Worker for offline PWA functionality
 const CACHE_NAME = "jspsych-offline-v1";
 
-const urlsToCache = ["/", "/index.html", "/admin.html", "/manifest.json"];
+// Local files to cache (relative paths)
+const localUrlsToCache = ["./", "./index.html", "./admin.html", "./manifest.json"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(urlsToCache);
+    caches.open(CACHE_NAME).then(async (cache) => {
+      // Get base URL for resolving relative paths
+      const baseForUrls =
+        self.registration && self.registration.scope ? self.registration.scope : self.location.href;
+
+      // Cache local files individually with try/catch
+      for (const urlPath of localUrlsToCache) {
+        try {
+          const url = new URL(urlPath, baseForUrls);
+          const response = await fetch(url);
+          if (response.ok) {
+            await cache.put(url, response.clone());
+          }
+        } catch (error) {
+          console.warn(`Failed to cache local file ${urlPath}:`, error);
+        }
+      }
     }),
   );
+  self.skipWaiting();
 });
 
 self.addEventListener("fetch", (event) => {
@@ -24,7 +41,26 @@ self.addEventListener("fetch", (event) => {
 
       return fetch(fetchRequest).then((response) => {
         // Check if valid response
-        if (!response || response.status !== 200 || response.type !== "basic") {
+        if (!response || response.status !== 200) {
+          return response;
+        }
+
+        // Only cache same-origin GET requests with http(s) protocol
+        if (event.request.method !== "GET") {
+          return response;
+        }
+
+        // Guard against invalid URL parsing
+        try {
+          const requestUrl = new URL(event.request.url);
+          const isSameOrigin = requestUrl.origin === self.location.origin;
+          const isHttpScheme = requestUrl.protocol === "http:" || requestUrl.protocol === "https:";
+
+          if (!isSameOrigin || !isHttpScheme) {
+            return response;
+          }
+        } catch (error) {
+          // Invalid URL, don't cache
           return response;
         }
 
