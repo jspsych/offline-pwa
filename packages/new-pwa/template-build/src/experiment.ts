@@ -4,7 +4,7 @@ import preload from "@jspsych/plugin-preload";
 
 // Initialize jsPsych with offline storage
 const jsPsych = initJsPsychOffline({
-  display_element: "jspsych-content",
+  display_element: "jspsych-target",
 });
 
 // Preload any assets
@@ -56,10 +56,6 @@ const testTrial = {
     correct_response: jsPsych.evaluateTimelineVariable("correct_response"),
   },
   on_finish: (data: any) => {
-    // Normalize null responses to -1
-    if (data.response === null) {
-      data.response = -1;
-    }
     data.correct = data.response === data.correct_response;
   },
 };

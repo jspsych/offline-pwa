@@ -82,10 +82,9 @@ self.addEventListener("fetch", (event) => {
         // Guard against invalid URL parsing (some requests may have non-http schemes)
         try {
           const requestUrl = new URL(event.request.url);
-          const isSameOrigin = requestUrl.origin === self.location.origin;
           const isHttpScheme = requestUrl.protocol === "http:" || requestUrl.protocol === "https:";
 
-          if (!isSameOrigin || !isHttpScheme) {
+          if (!isHttpScheme) {
             return response;
           }
         } catch (error) {

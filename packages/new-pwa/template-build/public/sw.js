@@ -2,7 +2,7 @@
 const CACHE_NAME = "jspsych-offline-v1";
 
 // Local files to cache (relative paths)
-const localUrlsToCache = ["./", "./index.html", "./admin.html", "./manifest.json"];
+const localUrlsToCache = ["./", "./index.html", "./admin/index.html", "./manifest.json"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -53,10 +53,9 @@ self.addEventListener("fetch", (event) => {
         // Guard against invalid URL parsing
         try {
           const requestUrl = new URL(event.request.url);
-          const isSameOrigin = requestUrl.origin === self.location.origin;
           const isHttpScheme = requestUrl.protocol === "http:" || requestUrl.protocol === "https:";
 
-          if (!isSameOrigin || !isHttpScheme) {
+          if (!isHttpScheme) {
             return response;
           }
         } catch (error) {

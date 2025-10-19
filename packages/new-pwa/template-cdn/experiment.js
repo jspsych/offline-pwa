@@ -52,10 +52,6 @@ const testTrial = {
     correct_response: jsPsych.evaluateTimelineVariable("correct_response"),
   },
   on_finish: (data) => {
-    // Normalize null responses to -1
-    if (data.response === null) {
-      data.response = -1;
-    }
     data.correct = data.response === data.correct_response;
   },
 };
