@@ -97,7 +97,7 @@ export async function create(projectName?: string, options: CreateOptions = {}) 
       "{{offlineStorageVersion}}": OFFLINE_STORAGE_VERSION,
     });
 
-    await replaceInFile(path.join(projectPath, "service/sw.js"), {
+    await replaceInFile(path.join(projectPath, "sw.js"), {
       "{{offlineStorageVersion}}": OFFLINE_STORAGE_VERSION,
     });
 
