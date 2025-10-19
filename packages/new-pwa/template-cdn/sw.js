@@ -1,21 +1,21 @@
 // Service Worker for offline PWA functionality
 const CACHE_NAME = "jspsych-offline-v1";
 
-// Local files to cache
+// Local files to cache (relative paths)
 const localUrlsToCache = [
-  "/",
-  "/index.html",
-  "/admin",
-  "/admin/index.html",
-  "/manifest.json",
-  "/experiment.js",
-  "/admin/admin.js",
+  "./",
+  "./index.html",
+  "./admin/",
+  "./admin/index.html",
+  "./manifest.json",
+  "./experiment.js",
+  "./admin/admin.js",
 ];
 
 // CDN URLs to pre-cache (these will be cached on install)
 const cdnUrlsToCache = [
   "https://unpkg.com/jspsych@8",
-  "https://unpkg.com/@jspsych/plugin-html-keyboard-response@2",
+  "https://unpkg.com/@jspsych/plugin-html-button-response@2",
   "https://unpkg.com/@jspsych/plugin-preload@2",
   "https://unpkg.com/@jspsych/offline-storage@{{offlineStorageVersion}}",
 ];
@@ -23,15 +23,32 @@ const cdnUrlsToCache = [
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(async (cache) => {
-      // Cache local files
-      await cache.addAll(localUrlsToCache);
+      // Get base URL for resolving relative paths
+      const baseForUrls =
+        self.registration && self.registration.scope ? self.registration.scope : self.location.href;
+
+      // Cache local files individually with try/catch
+      for (const urlPath of localUrlsToCache) {
+        try {
+          const url = new URL(urlPath, baseForUrls);
+          const response = await fetch(url);
+          if (response.ok) {
+            await cache.put(url, response.clone());
+          }
+        } catch (error) {
+          console.warn(`Failed to cache local file ${urlPath}:`, error);
+        }
+      }
 
       // Cache CDN files (use try/catch to handle any failures gracefully)
       for (const url of cdnUrlsToCache) {
         try {
-          await cache.add(url);
+          const response = await fetch(url);
+          if (response.ok) {
+            await cache.put(url, response.clone());
+          }
         } catch (error) {
-          console.warn(`Failed to cache ${url}:`, error);
+          console.warn(`Failed to cache CDN ${url}:`, error);
         }
       }
     }),
@@ -57,8 +74,21 @@ self.addEventListener("fetch", (event) => {
           return response;
         }
 
-        // Don't cache non-GET requests
+        // Only cache same-origin GET requests with http(s) protocol
         if (event.request.method !== "GET") {
+          return response;
+        }
+
+        // Guard against invalid URL parsing (some requests may have non-http schemes)
+        try {
+          const requestUrl = new URL(event.request.url);
+          const isHttpScheme = requestUrl.protocol === "http:" || requestUrl.protocol === "https:";
+
+          if (!isHttpScheme) {
+            return response;
+          }
+        } catch (error) {
+          // Invalid URL, don't cache
           return response;
         }
 
