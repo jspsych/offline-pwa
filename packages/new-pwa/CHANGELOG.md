@@ -1,5 +1,11 @@
 # @jspsych/new-pwa
 
+## 0.4.2
+
+### Patch Changes
+
+- [#17](https://github.com/jspsych/offline-pwa/pull/17) [`3db52ca3be64a0ea588d40b469b4ffbed8bf3a12`](https://github.com/jspsych/offline-pwa/commit/3db52ca3be64a0ea588d40b469b4ffbed8bf3a12) Thanks [@jodeleeuw](https://github.com/jodeleeuw)! - Add return to index page to templates. Fix timelineVariable call.
+
 ## 0.4.1
 
 ### Patch Changes
