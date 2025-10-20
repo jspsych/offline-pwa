@@ -1,5 +1,11 @@
 # @jspsych/new-pwa
 
+## 0.4.3
+
+### Patch Changes
+
+- [#19](https://github.com/jspsych/offline-pwa/pull/19) [`2e0ca52fdb07e8827fbe3026eb7b0aa737beb0e7`](https://github.com/jspsych/offline-pwa/commit/2e0ca52fdb07e8827fbe3026eb7b0aa737beb0e7) Thanks [@jodeleeuw](https://github.com/jodeleeuw)! - Remove the display: none CSS rule so that display become visible when experiment starts
+
 ## 0.4.2
 
 ### Patch Changes
